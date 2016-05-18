@@ -88,7 +88,8 @@ menu:
       cmp al, a
       je menu_free1
       cmp al, b
-      je training0
+      je training0    
+      jne menu
             
 
       
@@ -672,7 +673,38 @@ FA_T_EFF: mov dh, 16h
           mov dx, OFFSET ligne_vide
           int 21h
           
-          call FA     
+          call FA 
+          
+SOL_T_EFF: mov dh, 16h
+          mov dl, 00h
+          mov ah, 02h
+          int 10h
+          mov ah, 09h
+          mov dx, OFFSET ligne_vide
+          int 21h
+          
+          call SOL 
+
+LA_T_EFF: mov dh, 16h
+          mov dl, 00h
+          mov ah, 02h
+          int 10h
+          mov ah, 09h
+          mov dx, OFFSET ligne_vide
+          int 21h
+          
+          call LA
+
+SI_T_EFF: mov dh, 16h
+          mov dl, 00h
+          mov ah, 02h
+          int 10h
+          mov ah, 09h
+          mov dx, OFFSET ligne_vide
+          int 21h
+          
+          call SI_
+                
 
 
              
@@ -887,47 +919,47 @@ note3: mov ah, 09h
        jne verification
        
 note4: mov ah, 09h
-       mov dx, OFFSET DO_A
+       mov dx, OFFSET FA_A
        int 21h
        
        mov ah, 07h
        int 21h
        
-       cmp al, DO_T
-       je DO_T_EFF       
+       cmp al, FA_T
+       je FA_T_EFF       
        jne verification  
 
 note5: mov ah, 09h
-       mov dx, OFFSET RE_A
+       mov dx, OFFSET SOL_A
        int 21h
        
        mov ah, 07h
        int 21h
        
-       cmp al, RE_T
-       je RE_T_EFF       
+       cmp al, SOL_T
+       je SOL_T_EFF       
        jne verification
 
 note6: mov ah, 09h
-       mov dx, OFFSET MI_A
+       mov dx, OFFSET LA_A
        int 21h
        
        mov ah, 07h
        int 21h
        
-       cmp al, MI_T
-       je MI_T_EFF       
+       cmp al, LA_T
+       je LA_T_EFF       
        jne verification
        
 note7: mov ah, 09h
-       mov dx, OFFSET DO_A
+       mov dx, OFFSET SI_A
        int 21h
        
        mov ah, 07h
        int 21h
        
-       cmp al, DO_T
-       je DO_T_EFF       
+       cmp al, SI_T
+       je SI_T_EFF       
        jne verification  
 
 note8: mov ah, 09h
@@ -1017,3 +1049,4 @@ note15: mov ah, 09h
        cmp al, MI_T
        je MI_T_EFF       
        jne verification
+       

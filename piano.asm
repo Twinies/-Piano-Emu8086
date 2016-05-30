@@ -2,7 +2,7 @@
 ; You may customize this and other start-up templates; 
 ; The location of this template is c:\emu8086\inc\0_com_template.txt
 
-org 100h   
+_WinMain@16  
     
 
 main: call menu
@@ -11,7 +11,7 @@ main: call menu
          
  
     
-ret
+ret16
 ;---------------
 ;Dico de variable! 
 ;---------------
@@ -57,6 +57,7 @@ call eff_ecran
 ;----------------
 menu_principal:
 ;---------------- 
+      mov guitare,  0            ;On reinitialise tout a 0
       mov ret_cho_mus, 0
       mov musique_choisi, 0
       mov num_efface, 0
@@ -130,6 +131,8 @@ menu_principal:
       je MENU_WATC 
       cmp al, d   
       je choix_couleur
+      cmp al, f
+      je menu_guitare
       jne menu_principal  
       
     
@@ -145,7 +148,7 @@ message2 db "\|/   Choisissez votre mode de jeux :  $"
 message3 db " |    A: Free to play !                $"
 message4 db "/ \   B: Training!                     $"
 message5 db "      C: Watch me play!                $"
-message6 db "      D: Super option !               $"
+message6 db "      D: Super option ! et F:Guitare!  $"
 
 ;-----------------
 ;Swap color ! Parce que c'est drole ! 
@@ -264,7 +267,7 @@ msg_col3 db "M  : Pour un mangenta qui tire au violet !$"
 msg_col4 db "V  : Pour un jolie vert comme le kiwi !$"
 msg_col5 db "J  : Pour le cas ou vous voulez tuer vos yeux avec du jaune ! $"
 msg_col6 db "O  : La bas ... c'est blanc quoi, la base... $"
-msg_col7 db "Bon la c'est pour la couleurdes notes ! W= vert, X= Jaune, C= Magenta et R= Rouge$"
+msg_col7 db "Bon la c'est pour la couleurdes notes ! W=Vert, X=Jaune, C=Magenta et R=Rouge$"
 
 ;------------------
 ;Fonction du mode free
@@ -318,7 +321,8 @@ affichage_free:
       int 10h
       mov ah, 09h
       mov dx, OFFSET free_msg5
-      int 21h
+      int 21h  
+      
       
       call menu_free2
 
@@ -1204,7 +1208,7 @@ entr1 db "Vous voila maintenant dans le mode d'entrainement.                    
 entr2 db "Vous allez voir apparaitre des touche elles auront des etoiles au dessus.   $"
 entr3 db "Jouez ces touches, si vous ne jouez pas les bonnes elle seront redemandees. $"
 entr4 db "Allez bon courage vous allez y arriver!                                     $"
-entr5 db "Appuyez sur s pour choisir la musique                                       $"
+entr5 db "Appuyez sur s pour choisir la musique                                                                                                                   $"
 
 menu_train: mov choix, 2
             mov ah, 07h
@@ -2080,6 +2084,8 @@ eff_ecran2:
       mov dx, OFFSET ligne_vide
       int 21h 
       
+      cmp guitare, 1
+      je affichage_guitare
       cmp ret_cho_mus, 1
       je choix_musique22
       cmp principal, 1
@@ -3759,4 +3765,324 @@ musique_watch319: mov ah, 07h
                  je MI__T_EFF
                  jne verification
                  
-musique_watch320: call fin_watc
+musique_watch320: call fin_watc   
+
+
+
+;------------------------
+;Creation de la guitare ! 
+;------------------------
+guitare db 0
+
+menu_guitare: mov ah, 02h
+      mov dh, 00h
+      mov dl, 00h
+      int 10h
+      mov ah, 09h
+      mov dx, OFFSET message_g
+      int 21h 
+      
+      mov ah, 02h
+      mov dh, 01h
+      mov dl, 00h 
+      int 10h
+      mov ah, 09h
+      mov dx, OFFSET message_g2
+      int 21h 
+      
+      mov ah, 02h
+      mov dh, 02h
+      mov dl, 00h 
+      int 10h
+      mov ah, 09h
+      mov dx, OFFSET message_g3
+      int 21h   
+      
+      mov ah, 02h
+      mov dh, 03h
+      mov dl, 00h 
+      int 10h
+      mov ah, 09h
+      mov dx, OFFSET message_g4
+      int 21h
+      
+      mov ah, 02h
+      mov dh, 04h
+      mov dl, 00h 
+      int 10h
+      mov ah, 09h
+      mov dx, OFFSET message_g5
+      int 21h  
+      
+      mov ah, 02h
+      mov dh, 05h
+      mov dl, 00h 
+      int 10h
+      mov ah, 09h
+      mov dx, OFFSET message_g6
+      int 21h 
+      
+              mov guitare, 1
+              mov ah, 07h
+              int 21h   
+              cmp al, s
+              je eff_ecran
+              jne menu_guitare
+             
+message_g db  "Bonjour, bienvenue dans cet add-on !                    $ "
+message_g2 db "Ici vous allez pouvoir jouer de la guitare            $"
+message_g3 db "Appuyez sur 's' pour demarrer                    $"        
+message_g4 db "Et appuyez a tout moment sur 'a' pour quitter$"
+message_g5 db "                                                    $"   
+message_g6 db "                                                     $ "
+             
+fin_guitare: mov guitare, 0
+             call eff_ecran       
+             
+affichage_guitare:   
+
+mov ah, 02h
+      mov dh, 00h
+      mov dl, 00h
+      int 10h
+      mov ah, 09h
+      mov dx, OFFSET ligne_g1
+      int 21h 
+      
+      mov ah, 02h
+      mov dh, 01h
+      mov dl, 00h 
+      int 10h
+      mov ah, 09h
+      mov dx, OFFSET ligne_g2
+      int 21h 
+      
+      mov ah, 02h
+      mov dh, 02h
+      mov dl, 00h 
+      int 10h
+      mov ah, 09h
+      mov dx, OFFSET ligne_g3
+      int 21h   
+      
+      mov ah, 02h
+      mov dh, 03h
+      mov dl, 00h 
+      int 10h
+      mov ah, 09h
+      mov dx, OFFSET ligne_g4
+      int 21h
+      
+      mov ah, 02h
+      mov dh, 04h
+      mov dl, 00h 
+      int 10h
+      mov ah, 09h
+      mov dx, OFFSET ligne_g5
+      int 21h 
+      
+      mov ah, 02h
+      mov dh, 05h
+      mov dl, 00h 
+      int 10h
+      mov ah, 09h
+      mov dx, OFFSET ligne_g6
+      int 21h
+            
+      mov ah, 02h
+      mov dh, 06h
+      mov dl, 00h 
+      int 10h
+      mov ah, 09h
+      mov dx, OFFSET ligne_g7
+      int 21h 
+      
+      mov ah, 02h
+      mov dh, 07h
+      mov dl, 00h 
+      int 10h
+      mov ah, 09h
+      mov dx, OFFSET ligne_g8
+      int 21h   
+      
+      mov ah, 02h
+      mov dh, 08h
+      mov dl, 00h 
+      int 10h
+      mov ah, 09h
+      mov dx, OFFSET ligne_g9
+      int 21h
+      
+      mov ah, 02h
+      mov dh, 09h
+      mov dl, 00h 
+      int 10h
+      mov ah, 09h
+      mov dx, OFFSET ligne_g10
+      int 21h  
+      
+      call guitare_jeux
+
+ligne_g1  db "    _______________                              $"
+ligne_g2  db "   /               \                             $"
+ligne_g3  db "  /______e--------- \               []_[]_[]     $"
+ligne_g4  db " / ______d---------  \_____________/        \    $"
+ligne_g5  db "(  ______c---------                          |   $"
+ligne_g6  db "(  ______v---------   ______________  _  _  /    $"
+ligne_g7  db " \ ______b---------  /              [] [] []     $"
+ligne_g8  db "  \                 /                            $"
+ligne_g9  db "   \_______________/                             $"
+ligne_g10 db "                                                 $"    
+
+
+guitare_jeux: mov ah, 07h
+              int 21h
+              cmp al, e
+              je e_guit
+              cmp al, d
+              je d_guit
+              cmp al, c
+              je c_guit
+              cmp al, v
+              je v_guit
+              cmp al, b 
+              je b_guit
+              cmp al, a
+              je guit_fin 
+              jne guitare_jeux
+ 
+e_guit:   call guit_eff
+          mov dl, 07h
+          mov ah, 2
+          int 21h
+          mov ah, 02h
+          mov dh, 02h
+          mov dl, 10
+          int 10h
+
+          mov ah, 09h
+          mov al, '~'
+          mov bh, 0
+          mov cx, 9
+          mov bl, rouge
+          int 10h 
+          
+          call guitare_jeux   
+          
+d_guit:   call guit_eff
+          mov dl, 07h
+          mov ah, 2
+          int 21h
+          mov ah, 02h
+          mov dh, 03h
+          mov dl, 10
+          int 10h
+
+          mov ah, 09h
+          mov al, '~'
+          mov bh, 0
+          mov cx, 9
+          mov bl, rouge
+          int 10h 
+          
+          call guitare_jeux
+                             
+c_guit:   call guit_eff
+          mov dl, 07h
+          mov ah, 2
+          int 21h
+          mov ah, 02h
+          mov dh, 04h
+          mov dl, 10
+          int 10h
+
+          mov ah, 09h
+          mov al, '~'
+          mov bh, 0
+          mov cx, 9
+          mov bl, rouge
+          int 10h 
+          
+          call guitare_jeux
+          
+v_guit:   call guit_eff
+          mov dl, 07h
+          mov ah, 2
+          int 21h
+          mov ah, 02h
+          mov dh, 05h
+          mov dl, 10
+          int 10h
+
+          mov ah, 09h
+          mov al, '~'
+          mov bh, 0
+          mov cx, 9
+          mov bl, rouge
+          int 10h 
+          
+          call guitare_jeux  
+          
+b_guit:   call guit_eff
+          mov dl, 07h
+          mov ah, 2
+          int 21h
+          mov ah, 02h
+          mov dh, 06h
+          mov dl, 10
+          int 10h
+
+          mov ah, 09h
+          mov al, '~'
+          mov bh, 0
+          mov cx, 9
+          mov bl, rouge
+          int 10h 
+          
+          call guitare_jeux
+                  
+                  
+guit_eff: mov ah, 02h
+          mov dh, 02h
+          mov dl, 00h 
+          int 10h
+          mov ah, 09h
+          mov dx, OFFSET ligne_g3
+          int 21h   
+          
+          mov ah, 02h
+          mov dh, 03h
+          mov dl, 00h 
+          int 10h
+          mov ah, 09h
+          mov dx, OFFSET ligne_g4
+          int 21h
+          
+          mov ah, 02h
+          mov dh, 04h
+          mov dl, 00h 
+          int 10h
+          mov ah, 09h
+          mov dx, OFFSET ligne_g5
+          int 21h 
+          
+          mov ah, 02h
+          mov dh, 05h
+          mov dl, 00h 
+          int 10h
+          mov ah, 09h
+          mov dx, OFFSET ligne_g6
+          int 21h
+                
+          mov ah, 02h
+          mov dh, 06h
+          mov dl, 00h 
+          int 10h
+          mov ah, 09h
+          mov dx, OFFSET ligne_g7
+          int 21h 
+          
+          ret   
+
+guit_fin: mov guitare, 0
+          call eff_ecran     

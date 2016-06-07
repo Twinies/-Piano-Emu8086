@@ -2,7 +2,7 @@
 ; You may customize this and other start-up templates; 
 ; The location of this template is c:\emu8086\inc\0_com_template.txt
 
-_WinMain@16  
+org 100h 
     
 
 main: call menu
@@ -11,7 +11,9 @@ main: call menu
          
  
     
-ret16
+ret  
+
+
 ;---------------
 ;Dico de variable! 
 ;---------------
@@ -506,7 +508,7 @@ FA:       mov ah, 02h
           mov dh, 04h
           mov dl, 00
           int 10h
-                    
+          
           mov ah, 09h
           mov dx, OFFSET notete_vide
           int 21h
@@ -548,7 +550,7 @@ SOL:      mov ah, 02h
           mov dh, 04h
           mov dl, 00
           int 10h
-                    
+           
           mov ah, 09h
           mov dx, OFFSET notete_vide
           int 21h
@@ -590,7 +592,7 @@ LA:       mov ah, 02h
           mov dh, 04h
           mov dl, 00
           int 10h
-                    
+          
           mov ah, 09h
           mov dx, OFFSET notete_vide
           int 21h
@@ -1110,11 +1112,11 @@ piano:
       cmp watch, 1
       je add_note  
       
-DO__A   db "|  |*| |_|  |  |_| |_| |_|  |                                                 $"
-RE__A   db "|  |_| |*|  |  |_| |_| |_|  |                                                 $"
-MI__A   db "|  |_| |_|  |  |*| |_| |_|  |                                                 $"
-SOL__A  db "|  |_| |_|  |  |_| |*| |_|  |                                                 $"
-LA__A   db "|  |_| |_|  |  |_| |_| |*|  |                                                 $"   
+DO__A   db "|  |*| |_|  |  |_| |_| |_|  |                         $"
+RE__A   db "|  |_| |*|  |  |_| |_| |_|  |                         $"
+MI__A   db "|  |_| |_|  |  |*| |_| |_|  |                         $"
+SOL__A  db "|  |_| |_|  |  |_| |*| |_|  |                         $"
+LA__A   db "|  |_| |_|  |  |_| |_| |*|  |                         $"   
                                                                                                       
 ligne1  db "|  | | | |  |  | | | | | |  |                                                 $"
 ligne2  db "|  | | | |  |  | | | | | |  |                                                 $"
@@ -4085,4 +4087,51 @@ guit_eff: mov ah, 02h
           ret   
 
 guit_fin: mov guitare, 0
-          call eff_ecran     
+          call eff_ecran   
+          
+bon_son_la: mov al,3
+            out 61h,al        ;allume le bip    
+            
+            mov dx,42h                 ;diviseur de fréquence du buzzer (LSB en premier)
+            mov ax,440               ;ax=1193200/fréquence désiré
+            out dx,al
+            jmp $+2
+            mov al,ah                  ;puis le MSB
+            out dx,al
+            
+            mov al,0
+            out 61h,al        ;éteint le bip    
+            ret
+            
+            
+bon_son_sol: mov al,3
+            out 61h,al        ;allume le bip    
+            
+            mov dx,42h                 ;diviseur de fréquence du buzzer (LSB en premier)
+            mov ax,392               ;ax=1193200/fréquence désiré
+            out dx,al
+            jmp $+2
+            mov al,ah                  ;puis le MSB
+            out dx,al
+            
+            mov al,0
+            out 61h,al        ;éteint le bip  
+            ret 
+            
+bon_son_fa: mov al,3
+            out 61h,al        ;allume le bip    
+            
+            mov dx,42h                 ;diviseur de fréquence du buzzer (LSB en premier)
+            mov ax,349              ;ax=1193200/fréquence désiré
+            out dx,al
+            jmp $+2
+            mov al,ah                  ;puis le MSB
+            out dx,al
+            
+            mov al,0
+            out 61h,al        ;éteint le bip 
+            ret
+
+            
+
+            

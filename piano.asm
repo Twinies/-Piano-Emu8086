@@ -1,7 +1,3 @@
-
-; You may customize this and other start-up templates; 
-; The location of this template is c:\emu8086\inc\0_com_template.txt
-
 org 100h 
     
 
@@ -73,10 +69,19 @@ menu_principal:
       mov principal, 0 
       mov iteration, 0
       
+      
+      mov ah, 02h
+      mov dh, 00h
+      mov dl, 00h
+      int 10h
+      mov ah, 09h
+      mov dx, OFFSET message0
+      int 21h 
+      
 
 
       mov ah, 02h
-      mov dh, 00h
+      mov dh, 01h
       mov dl, 00h
       int 10h
       mov ah, 09h
@@ -84,7 +89,7 @@ menu_principal:
       int 21h 
       
       mov ah, 02h
-      mov dh, 01h
+      mov dh, 02h
       mov dl, 00h 
       int 10h
       mov ah, 09h
@@ -92,7 +97,7 @@ menu_principal:
       int 21h 
       
       mov ah, 02h
-      mov dh, 02h
+      mov dh, 03h
       mov dl, 00h 
       int 10h
       mov ah, 09h
@@ -100,7 +105,7 @@ menu_principal:
       int 21h   
       
       mov ah, 02h
-      mov dh, 03h
+      mov dh, 04h
       mov dl, 00h 
       int 10h
       mov ah, 09h
@@ -108,7 +113,7 @@ menu_principal:
       int 21h
       
       mov ah, 02h
-      mov dh, 04h
+      mov dh, 05h
       mov dl, 00h 
       int 10h
       mov ah, 09h
@@ -116,7 +121,7 @@ menu_principal:
       int 21h  
       
       mov ah, 02h
-      mov dh, 05h
+      mov dh, 06h
       mov dl, 00h 
       int 10h
       mov ah, 09h
@@ -144,13 +149,15 @@ menu_principal:
       
 num_efface db 0
 num_jeux db 0                                  ;Savoir quel mode return
-choix db 0                                     ;Savoir dans quelle menu return     
-message  db " O    Bonjour, bienvenue dans EmuPiano.$"
-message2 db "\|/   Choisissez votre mode de jeux :  $" 
-message3 db " |    A: Free to play !                $"
-message4 db "/ \   B: Training!                     $"
-message5 db "      C: Watch me play!                $"
-message6 db "      D: Super option ! et F:Guitare!  $"
+choix db 0                                     ;Savoir dans quelle menu return
+
+message0 db "             **************************************            $"     
+message  db "             *  Bonjour, bienvenue dans EmuPiano. *            $"
+message2 db "             **************************************            $" 
+message3 db "                   A: Free to play !                $"
+message4 db "                   B: Training!                     $"
+message5 db "                   C: Watch me play!                $"
+message6 db "                   D: Super option ! et F:Guitare!  $"
 
 ;-----------------
 ;Swap color ! Parce que c'est drole ! 
@@ -323,6 +330,22 @@ affichage_free:
       int 10h
       mov ah, 09h
       mov dx, OFFSET free_msg5
+      int 21h      
+      
+      mov ah, 02h
+      mov dh, 05h
+      mov dl, 00h 
+      int 10h
+      mov ah, 09h
+      mov dx, OFFSET free_msg6
+      int 21h 
+       
+      mov ah, 02h
+      mov dh, 05h
+      mov dl, 00h 
+      int 10h
+      mov ah, 09h
+      mov dx, OFFSET free_msg7
       int 21h  
       
       
@@ -363,11 +386,13 @@ piano_free:
                     je LA_#
                     jne piano_free 
          
-free_msg1 db "Bienvenue dans le mode Free.                                                                               $"
-free_msg2 db "Ce mode vous permet de jouer n'importe quelles touches du piano comme vous voulez.                         $"         
-free_msg3 db "N'oubliez pas d'acheter le jeu si il vous plait :)                                                         $"
-free_msg4 db "Appuyez sur 'A' pour sortir du jeu a tout moment.                                                          $"                                                                                                    
-free_msg5 db "Appuyer sur F2 pour commencer !                                                                            $"                                                                                                   
+free_msg1 db "Bienvenue dans le mode Free.                                                         $"
+free_msg2 db "Ce mode vous permet de jouer n'importe quelles touches du piano.              $"         
+free_msg3 db "N'oubliez pas d'acheter le jeu si il vous plait                                                 $"
+free_msg4 db "Appuyez sur 'A' pour sortir du jeu a tout moment.                                               $"                                                                                                    
+free_msg5 db "Appuyer sur F2 pour commencer !                                                                 $" 
+free_msg6 db "Ah et surtout, prenez soin du Rock&Roll !                                          $" 
+free_msg7 db "            3... 2... 1...                                                         $"                                                                                                  
 
          
 ;--------------------
@@ -2167,6 +2192,8 @@ LA__T db 'o'
 
 
 musique11: call EFFACE_NOTE 
+           mov cx, 50000
+           call boucle
 
            cmp watch, 1
            je MI
@@ -2183,7 +2210,9 @@ musique11: call EFFACE_NOTE
        je MI_T_EFF      
        jne verification  
 
-musique12: call EFFACE_NOTE
+musique12: call EFFACE_NOTE 
+           mov cx, 50000
+           call boucle
         mov ah, 02h
           mov dh, 04h
           mov dl, 00h 
@@ -2204,6 +2233,8 @@ musique12: call EFFACE_NOTE
        jne verification
 
 musique13:  call EFFACE_NOTE
+            mov cx, 50000
+           call boucle
 cmp watch, 1
        je MI
 
@@ -2218,7 +2249,9 @@ cmp watch, 1
        je MI_T_EFF       
        jne verification
        
-musique14:   call EFFACE_NOTE
+musique14:   call EFFACE_NOTE 
+            mov cx, 50000
+           call boucle
 mov ah, 02h
           mov dh, 04h
           mov dl, 00h 
@@ -2240,7 +2273,9 @@ mov ah, 02h
        je RE__T_EFF       
        jne verification  
 
-musique15: call EFFACE_NOTE
+musique15: call EFFACE_NOTE 
+            mov cx, 50000
+           call boucle
 cmp watch, 1
        je MI
        
@@ -2255,7 +2290,9 @@ cmp watch, 1
        je MI_T_EFF       
        jne verification
 
-musique16:    call EFFACE_NOTE
+musique16:    call EFFACE_NOTE 
+            mov cx, 50000
+           call boucle
 cmp watch, 1
        je SI_
 
@@ -2271,7 +2308,9 @@ cmp watch, 1
        je SI_T_EFF       
        jne verification
        
-musique17:  call EFFACE_NOTE
+musique17:  call EFFACE_NOTE 
+            mov cx, 50000
+           call boucle
 cmp watch, 1
        je RE
 
@@ -2286,7 +2325,9 @@ cmp watch, 1
        je RE_T_EFF       
        jne verification  
 
-musique18:       call EFFACE_NOTE
+musique18:       call EFFACE_NOTE 
+                mov cx, 50000
+           call boucle
 cmp watch, 1
        je DO
 
@@ -2301,7 +2342,9 @@ cmp watch, 1
        je RE_T_EFF       
        jne verification
 
-musique19: call EFFACE_NOTE
+musique19: call EFFACE_NOTE 
+            mov cx, 50000
+           call boucle
 cmp watch, 1
        je LA
        
@@ -2317,6 +2360,8 @@ cmp watch, 1
        jne verification
        
 musique110: call EFFACE_NOTE
+            mov cx, 50000
+           call boucle
        cmp watch, 1
        je DO
         
@@ -2332,7 +2377,9 @@ musique110: call EFFACE_NOTE
        je DO_T_EFF       
        jne verification  
 
-musique111:  call EFFACE_NOTE
+musique111:  call EFFACE_NOTE 
+            mov cx, 50000
+           call boucle
 cmp watch, 1
        je MI
         
@@ -2347,7 +2394,9 @@ cmp watch, 1
        je MI_T_EFF       
        jne verification
 
-musique112:   call EFFACE_NOTE
+musique112:   call EFFACE_NOTE 
+            mov cx, 50000
+           call boucle
 cmp watch, 1
        je LA
         
@@ -2363,7 +2412,9 @@ cmp watch, 1
        je LA_T_EFF       
        jne verification 
        
-musique113: call EFFACE_NOTE
+musique113: call EFFACE_NOTE 
+            mov cx, 50000
+           call boucle
 cmp watch, 1
        je SI_
         
@@ -2379,6 +2430,8 @@ cmp watch, 1
        jne verification  
 
 musique114:  call EFFACE_NOTE
+            mov cx, 50000
+           call boucle
 cmp watch, 1
        je MI
        
@@ -2395,7 +2448,9 @@ cmp watch, 1
        je MI_T_EFF       
        jne verification
 
-musique115: call EFFACE_NOTE
+musique115: call EFFACE_NOTE 
+            mov cx, 50000
+           call boucle
 mov ah, 02h
           mov dh, 04h
           mov dl, 00h 
@@ -2416,7 +2471,9 @@ mov ah, 02h
        je SOL__T_EFF       
        jne verification
        
-musique116:  call EFFACE_NOTE
+musique116:  call EFFACE_NOTE  
+            mov cx, 50000
+           call boucle
 cmp watch, 1
            je SI_
         
@@ -2433,6 +2490,8 @@ cmp watch, 1
            jne verification  
            
 musique117:   call EFFACE_NOTE
+                mov cx, 50000
+           call boucle
 cmp watch, 1
            je DO
         
@@ -2757,16 +2816,35 @@ cmp watch, 1
            
 musique220:cmp watch, 1
                 je add_watch_note 
-           call eff_musique
-       
+           call eff_musique   
+
+;------------------------
+;Implementation de la boucle
+;------------------------
+boucle: cmp cx, 1
+        je boucle2
+        loop boucle
+        
+boucle2: mov cx, 50000
+         cmp cx, 50000
+         je boucle3
+         jne boucle2
+
+boucle3:cmp cx, 1
+        je fin
+        loop boucle3
+
+fin: ret       
        
 ;------------------------
 ;Implementation de la musique 3 Danse Hongroise ! 
 ;------------------------          
 
-musique31: call EFFACE_NOTE
+musique31: call EFFACE_NOTE 
+           mov cx, 50
+           call boucle
            cmp watch, 1
-       je DO_#  
+           je DO_#  
        
        mov ah, 02h
           mov dh, 04h
@@ -2786,8 +2864,11 @@ musique31: call EFFACE_NOTE
        jne verification  
 
 musique32: call EFFACE_NOTE
-cmp watch, 1
-       je MI_#  
+           mov cx, 50
+           call boucle 
+           
+           cmp watch, 1
+           je MI_#  
        
        mov ah, 02h
           mov dh, 04h

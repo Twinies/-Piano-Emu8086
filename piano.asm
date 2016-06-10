@@ -1,3 +1,6 @@
+; You may customize this and other start-up templates; 
+; The location of this template is c:\emu8086\inc\0_com_template.txt
+
 org 100h 
     
 
@@ -270,12 +273,12 @@ touche_magenta: mov rouge, 13
 touche_rouge: mov rouge, 12
               call eff_ecran
              
-msg_col1 db "Choisissez la couleur de votre interface !$"
-msg_col2 db "B  : Pour un super bleu qui envoie de la cacahuete !$"
-msg_col3 db "M  : Pour un mangenta qui tire au violet !$"
-msg_col4 db "V  : Pour un jolie vert comme le kiwi !$"
-msg_col5 db "J  : Pour le cas ou vous voulez tuer vos yeux avec du jaune ! $"
-msg_col6 db "O  : La bas ... c'est blanc quoi, la base... $"
+msg_col1 db "Choisissez la couleur de votre interface !                                   $"
+msg_col2 db "B  : Pour un super bleu qui envoie de la cacahuete !                         $"
+msg_col3 db "M  : Pour un mangenta qui tire au violet !                                   $"
+msg_col4 db "V  : Pour un jolie vert comme le kiwi !                                      $"
+msg_col5 db "J  : Pour le cas ou vous voulez tuer vos yeux avec du jaune !                $"
+msg_col6 db "O  : La bas ... c'est blanc quoi, la base...                                 $"
 msg_col7 db "Bon la c'est pour la couleurdes notes ! W=Vert, X=Jaune, C=Magenta et R=Rouge$"
 
 ;------------------
@@ -341,7 +344,7 @@ affichage_free:
       int 21h 
        
       mov ah, 02h
-      mov dh, 05h
+      mov dh, 06h
       mov dl, 00h 
       int 10h
       mov ah, 09h
@@ -386,13 +389,14 @@ piano_free:
                     je LA_#
                     jne piano_free 
          
-free_msg1 db "Bienvenue dans le mode Free.                                                         $"
-free_msg2 db "Ce mode vous permet de jouer n'importe quelles touches du piano.              $"         
-free_msg3 db "N'oubliez pas d'acheter le jeu si il vous plait                                                 $"
-free_msg4 db "Appuyez sur 'A' pour sortir du jeu a tout moment.                                               $"                                                                                                    
-free_msg5 db "Appuyer sur F2 pour commencer !                                                                 $" 
-free_msg6 db "Ah et surtout, prenez soin du Rock&Roll !                                          $" 
-free_msg7 db "            3... 2... 1...                                                         $"                                                                                                  
+free_msg1 db "             **************************************            $"     
+free_msg2 db "             *  Menu du free to play !            *            $"
+free_msg3 db "             **************************************            $" 
+free_msg4 db "            Dans ce mode joue les touches de ton choix               $"
+free_msg5 db "            Essaye de faire la plus jolie des melodies                     $"
+free_msg6 db "            Tu pourras aussi aller découvrir des musiques en training             $"
+free_msg7 db "            Et surtout, prenez soins du Rock'n Roll                   $" 
+                                                                                                  
 
          
 ;--------------------
@@ -1195,6 +1199,12 @@ training:
           je training5
            
           cmp dh, 5
+          je training6 
+          
+          cmp dh, 6
+          je training7
+          
+          cmp dh, 7
           je menu_train
           
           
@@ -1230,13 +1240,26 @@ training5: mov ah, 09h
            mov dh, 5
            loop training 
 
-     
-entr1 db "Vous voila maintenant dans le mode d'entrainement.                          $" 
-entr2 db "Vous allez voir apparaitre des touche elles auront des etoiles au dessus.   $"
-entr3 db "Jouez ces touches, si vous ne jouez pas les bonnes elle seront redemandees. $"
-entr4 db "Allez bon courage vous allez y arriver!                                     $"
-entr5 db "Appuyez sur s pour choisir la musique                                                                                                                   $"
+training6: mov ah, 09h
+           mov dx, OFFSET entr6
+           int 21h
+           mov dh, 6
+           loop training    
+           
+training7: mov ah, 09h
+           mov dx, OFFSET entr7
+           int 21h
+           mov dh, 7
+           loop training 
 
+     
+entr1 db "             **************************************            $"     
+entr2 db "             *  Menu du Training.                 *            $"
+entr3 db "             **************************************            $" 
+entr4 db "               Choisis ta musique et entraine toi!            $"
+entr5 db "             Appuye sur 's' pour choisir ta musique           $"
+entr6 db "           Lorsque tu auras finis tu seras ramene au menu.    $"
+entr7 db "              Appuye sur 's' pour choisir ta musique.         $"
 menu_train: mov choix, 2
             mov ah, 07h
             int 21h   
@@ -1550,6 +1573,38 @@ menu_watch: mov MENU_WATC0, 0
             int 10h
             mov ah, 09h
             mov dx, OFFSET watch_ligne3
+            int 21h  
+            
+            mov dh, 03h
+            mov dl, 00h
+            mov ah, 02h
+            int 10h
+            mov ah, 09h
+            mov dx, OFFSET watch_ligne4
+            int 21h 
+            
+            mov dh, 04h
+            mov dl, 00h
+            mov ah, 02h
+            int 10h
+            mov ah, 09h
+            mov dx, OFFSET watch_ligne5
+            int 21h
+            
+            mov dh, 05h
+            mov dl, 00h
+            mov ah, 02h
+            int 10h
+            mov ah, 09h
+            mov dx, OFFSET watch_ligne6
+            int 21h  
+            
+            mov dh, 02h
+            mov dl, 06h
+            mov ah, 02h
+            int 10h
+            mov ah, 09h
+            mov dx, OFFSET watch_ligne7
             int 21h
             
             mov ah, 07h
@@ -1558,9 +1613,13 @@ menu_watch: mov MENU_WATC0, 0
             je choix_musique
             jne menu_watch                    
  
-watch_ligne1 db "Vous voila dans le mode watch me play. Vous allez voir une melodie.$"
-watch_ligne2 db "Essayez de tout jouer d'une traite.                                $"
-watch_ligne3 db "Appuyez sur 's' pour choisir votre musique.                        $"             
+watch_ligne1 db "             **************************************            $"     
+watch_ligne2 db "             *  Menu du Watch me play.            *            $"
+watch_ligne3 db "             **************************************            $" 
+watch_ligne4 db "         Choisis ta musique et regarde l'ordinateur jouer!                $"
+watch_ligne5 db "             Tu pourras ensuite reessayer a jouer la musique.           $"
+watch_ligne6 db "           Mais attention tu n'as que trois essaies !    $"
+watch_ligne7 db "           Appuye sur 's' pour choisir ta musique !                                            $"             
                 
 
 iteration_watch db 0 
@@ -2192,8 +2251,7 @@ LA__T db 'o'
 
 
 musique11: call EFFACE_NOTE 
-           mov cx, 50000
-           call boucle
+     
 
            cmp watch, 1
            je MI
@@ -2211,8 +2269,7 @@ musique11: call EFFACE_NOTE
        jne verification  
 
 musique12: call EFFACE_NOTE 
-           mov cx, 50000
-           call boucle
+        
         mov ah, 02h
           mov dh, 04h
           mov dl, 00h 
@@ -2233,8 +2290,7 @@ musique12: call EFFACE_NOTE
        jne verification
 
 musique13:  call EFFACE_NOTE
-            mov cx, 50000
-           call boucle
+       
 cmp watch, 1
        je MI
 
@@ -2250,8 +2306,7 @@ cmp watch, 1
        jne verification
        
 musique14:   call EFFACE_NOTE 
-            mov cx, 50000
-           call boucle
+      
 mov ah, 02h
           mov dh, 04h
           mov dl, 00h 
@@ -2274,8 +2329,7 @@ mov ah, 02h
        jne verification  
 
 musique15: call EFFACE_NOTE 
-            mov cx, 50000
-           call boucle
+    
 cmp watch, 1
        je MI
        
@@ -2291,8 +2345,7 @@ cmp watch, 1
        jne verification
 
 musique16:    call EFFACE_NOTE 
-            mov cx, 50000
-           call boucle
+        
 cmp watch, 1
        je SI_
 
@@ -2309,8 +2362,7 @@ cmp watch, 1
        jne verification
        
 musique17:  call EFFACE_NOTE 
-            mov cx, 50000
-           call boucle
+          
 cmp watch, 1
        je RE
 
@@ -2326,8 +2378,7 @@ cmp watch, 1
        jne verification  
 
 musique18:       call EFFACE_NOTE 
-                mov cx, 50000
-           call boucle
+        
 cmp watch, 1
        je DO
 
@@ -2343,8 +2394,7 @@ cmp watch, 1
        jne verification
 
 musique19: call EFFACE_NOTE 
-            mov cx, 50000
-           call boucle
+      
 cmp watch, 1
        je LA
        
@@ -2360,8 +2410,7 @@ cmp watch, 1
        jne verification
        
 musique110: call EFFACE_NOTE
-            mov cx, 50000
-           call boucle
+          
        cmp watch, 1
        je DO
         
@@ -2378,8 +2427,7 @@ musique110: call EFFACE_NOTE
        jne verification  
 
 musique111:  call EFFACE_NOTE 
-            mov cx, 50000
-           call boucle
+         
 cmp watch, 1
        je MI
         
@@ -2395,8 +2443,7 @@ cmp watch, 1
        jne verification
 
 musique112:   call EFFACE_NOTE 
-            mov cx, 50000
-           call boucle
+      
 cmp watch, 1
        je LA
         
@@ -2413,8 +2460,7 @@ cmp watch, 1
        jne verification 
        
 musique113: call EFFACE_NOTE 
-            mov cx, 50000
-           call boucle
+        
 cmp watch, 1
        je SI_
         
@@ -2430,8 +2476,7 @@ cmp watch, 1
        jne verification  
 
 musique114:  call EFFACE_NOTE
-            mov cx, 50000
-           call boucle
+        
 cmp watch, 1
        je MI
        
@@ -2449,8 +2494,7 @@ cmp watch, 1
        jne verification
 
 musique115: call EFFACE_NOTE 
-            mov cx, 50000
-           call boucle
+       
 mov ah, 02h
           mov dh, 04h
           mov dl, 00h 
@@ -2472,8 +2516,7 @@ mov ah, 02h
        jne verification
        
 musique116:  call EFFACE_NOTE  
-            mov cx, 50000
-           call boucle
+            
 cmp watch, 1
            je SI_
         
@@ -2490,8 +2533,7 @@ cmp watch, 1
            jne verification  
            
 musique117:   call EFFACE_NOTE
-                mov cx, 50000
-           call boucle
+              
 cmp watch, 1
            je DO
         
@@ -2819,30 +2861,11 @@ musique220:cmp watch, 1
            call eff_musique   
 
 ;------------------------
-;Implementation de la boucle
-;------------------------
-boucle: cmp cx, 1
-        je boucle2
-        loop boucle
-        
-boucle2: mov cx, 50000
-         cmp cx, 50000
-         je boucle3
-         jne boucle2
-
-boucle3:cmp cx, 1
-        je fin
-        loop boucle3
-
-fin: ret       
-       
-;------------------------
 ;Implementation de la musique 3 Danse Hongroise ! 
 ;------------------------          
 
 musique31: call EFFACE_NOTE 
-           mov cx, 50
-           call boucle
+           
            cmp watch, 1
            je DO_#  
        
@@ -2864,8 +2887,7 @@ musique31: call EFFACE_NOTE
        jne verification  
 
 musique32: call EFFACE_NOTE
-           mov cx, 50
-           call boucle 
+           
            
            cmp watch, 1
            je MI_#  
@@ -3903,7 +3925,16 @@ menu_guitare: mov ah, 02h
       int 10h
       mov ah, 09h
       mov dx, OFFSET message_g6
+      int 21h  
+      
+      mov ah, 02h
+      mov dh, 06h
+      mov dl, 00h 
+      int 10h
+      mov ah, 09h
+      mov dx, OFFSET message_g6
       int 21h 
+      
       
               mov guitare, 1
               mov ah, 07h
@@ -3912,13 +3943,13 @@ menu_guitare: mov ah, 02h
               je eff_ecran
               jne menu_guitare
              
-message_g db  "Bonjour, bienvenue dans cet add-on !                    $ "
-message_g2 db "Ici vous allez pouvoir jouer de la guitare            $"
-message_g3 db "Appuyez sur 's' pour demarrer                    $"        
-message_g4 db "Et appuyez a tout moment sur 'a' pour quitter$"
-message_g5 db "                                                    $"   
-message_g6 db "                                                     $ "
-             
+message_g db  "Bonjour, bienvenue dans cet add-on !                                 $"
+message_g2 db "Ici vous allez pouvoir jouer de la guitare                           $"
+message_g3 db "Appuyez sur 's' pour demarrer                                        $"        
+message_g4 db "Et appuyez a tout moment sur 'a' pour quitter                        $"
+message_g5 db "                                                                     $"   
+message_g6 db "                                                                     $"
+message_g7 db "                                                                     $"                                                                 
 fin_guitare: mov guitare, 0
              call eff_ecran       
              
@@ -4170,49 +4201,3 @@ guit_eff: mov ah, 02h
 guit_fin: mov guitare, 0
           call eff_ecran   
           
-bon_son_la: mov al,3
-            out 61h,al        ;allume le bip    
-            
-            mov dx,42h                 ;diviseur de fréquence du buzzer (LSB en premier)
-            mov ax,440               ;ax=1193200/fréquence désiré
-            out dx,al
-            jmp $+2
-            mov al,ah                  ;puis le MSB
-            out dx,al
-            
-            mov al,0
-            out 61h,al        ;éteint le bip    
-            ret
-            
-            
-bon_son_sol: mov al,3
-            out 61h,al        ;allume le bip    
-            
-            mov dx,42h                 ;diviseur de fréquence du buzzer (LSB en premier)
-            mov ax,392               ;ax=1193200/fréquence désiré
-            out dx,al
-            jmp $+2
-            mov al,ah                  ;puis le MSB
-            out dx,al
-            
-            mov al,0
-            out 61h,al        ;éteint le bip  
-            ret 
-            
-bon_son_fa: mov al,3
-            out 61h,al        ;allume le bip    
-            
-            mov dx,42h                 ;diviseur de fréquence du buzzer (LSB en premier)
-            mov ax,349              ;ax=1193200/fréquence désiré
-            out dx,al
-            jmp $+2
-            mov al,ah                  ;puis le MSB
-            out dx,al
-            
-            mov al,0
-            out 61h,al        ;éteint le bip 
-            ret
-
-            
-
-            

@@ -1,3 +1,4 @@
+
 ; You may customize this and other start-up templates; 
 ; The location of this template is c:\emu8086\inc\0_com_template.txt
 
@@ -2238,6 +2239,16 @@ EFFACE_NOTE:  mov ah, 02h
               
               ret
 
+;------------------------
+;Implementation de l'attente
+;------------------------
+attente: mov ah, 86h
+         mov dx, 1000
+         int 15h 
+         ret
+
+
+
 
 
 ;------------------------
@@ -2251,7 +2262,7 @@ LA__T db 'o'
 
 
 musique11: call EFFACE_NOTE 
-     
+           call attente
 
            cmp watch, 1
            je MI
@@ -2269,6 +2280,7 @@ musique11: call EFFACE_NOTE
        jne verification  
 
 musique12: call EFFACE_NOTE 
+           call attente
         
         mov ah, 02h
           mov dh, 04h
@@ -2289,7 +2301,8 @@ musique12: call EFFACE_NOTE
        je RE__T_EFF       
        jne verification
 
-musique13:  call EFFACE_NOTE
+musique13:  call EFFACE_NOTE 
+            call attente
        
 cmp watch, 1
        je MI
@@ -2305,7 +2318,8 @@ cmp watch, 1
        je MI_T_EFF       
        jne verification
        
-musique14:   call EFFACE_NOTE 
+musique14:   call EFFACE_NOTE  
+             call attente
       
 mov ah, 02h
           mov dh, 04h
@@ -2329,6 +2343,7 @@ mov ah, 02h
        jne verification  
 
 musique15: call EFFACE_NOTE 
+           call attente
     
 cmp watch, 1
        je MI
@@ -2362,6 +2377,7 @@ cmp watch, 1
        jne verification
        
 musique17:  call EFFACE_NOTE 
+            call attente
           
 cmp watch, 1
        je RE
@@ -2378,6 +2394,7 @@ cmp watch, 1
        jne verification  
 
 musique18:       call EFFACE_NOTE 
+                 call attente
         
 cmp watch, 1
        je DO
@@ -4201,3 +4218,49 @@ guit_eff: mov ah, 02h
 guit_fin: mov guitare, 0
           call eff_ecran   
           
+bon_son_la: mov al,3
+            out 61h,al        ;allume le bip    
+            
+            mov dx,42h                 ;diviseur de fréquence du buzzer (LSB en premier)
+            mov ax,440               ;ax=1193200/fréquence désiré
+            out dx,al
+            jmp $+2
+            mov al,ah                  ;puis le MSB
+            out dx,al
+            
+            mov al,0
+            out 61h,al        ;éteint le bip    
+            ret
+            
+            
+bon_son_sol: mov al,3
+            out 61h,al        ;allume le bip    
+            
+            mov dx,42h                 ;diviseur de fréquence du buzzer (LSB en premier)
+            mov ax,392               ;ax=1193200/fréquence désiré
+            out dx,al
+            jmp $+2
+            mov al,ah                  ;puis le MSB
+            out dx,al
+            
+            mov al,0
+            out 61h,al        ;éteint le bip  
+            ret 
+            
+bon_son_fa: mov al,3
+            out 61h,al        ;allume le bip    
+            
+            mov dx,42h                 ;diviseur de fréquence du buzzer (LSB en premier)
+            mov ax,349              ;ax=1193200/fréquence désiré
+            out dx,al
+            jmp $+2
+            mov al,ah                  ;puis le MSB
+            out dx,al
+            
+            mov al,0
+            out 61h,al        ;éteint le bip 
+            ret
+
+            
+
+            
